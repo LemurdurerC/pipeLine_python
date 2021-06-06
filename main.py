@@ -41,6 +41,9 @@ async def create_upload_file(file: UploadFile = File(...)):
     return "test"
 
     # appeler le reste du pipeline
+    #ocr
+    #prédiction
+    # retour à l'utilisateur + stockage elastic search
 
 
 if __name__ == "__main__":
