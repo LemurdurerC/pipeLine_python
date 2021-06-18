@@ -1,4 +1,5 @@
 import base64
+import json
 import string
 
 import numpy as np
@@ -6,6 +7,7 @@ import uvicorn
 from fastapi import FastAPI, File, UploadFile
 import shutil
 from fastapi.middleware.cors import CORSMiddleware
+from elasticsearch import Elasticsearch
 
 import cv2
 
@@ -38,12 +40,22 @@ async def create_upload_file(file: UploadFile = File(...)):
         cv2.waitKey()
     except Exception as e:
         print("Lol")
-    return "test"
+    data = {"id" : "999", "company" : "alfonso", "date" : "18-06-2021", "total" : "200"}
+    datas = json.dumps(data)
+    sendElasticSearch(datas)
 
     # appeler le reste du pipeline
     #ocr
     #prédiction
     # retour à l'utilisateur + stockage elastic search
+
+def sendElasticSearch(datas):
+    es = Elasticsearch(HOST="http://localhost", PORT=9200)
+    es = Elasticsearch()
+    ticket_data = json.loads(datas)
+    ticket = {"id": ticket_data["id"], "company": ticket_data["company"],"date": ticket_data["date"], "total": ticket_data["total"]}
+    es.index(index="tickets", doc_type="text", body=ticket)
+
 
 
 if __name__ == "__main__":
